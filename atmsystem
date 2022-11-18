@@ -1,0 +1,285 @@
+package java_report;
+
+
+import java.util.*;
+
+class Atm{
+boolean user_authentication=false;
+
+}
+
+class Account
+{
+int accountnumber ;
+int pin;
+double balance;
+Account(int accountnumber,int pin,double balance){
+    this.accountnumber=accountnumber;
+    this.pin=pin;
+    this.balance=balance;
+}
+double availableBalance;
+double getavailablebalance()
+{
+System.out.println("the available balance is");
+availableBalance=balance;
+return availableBalance;
+
+
+}
+//checks if the user has entered the right pin number and returns a boolean value//
+boolean validatepin(int pin,int pin_number){
+if(pin==pin_number){
+    System.out.println("valid pin");
+    return true;
+}
+else{
+    return false;
+}
+}
+
+
+
+
+
+double  credit(double balance,double cash){
+balance=balance+cash;
+    return balance;
+}
+double debit(double balance,double cash){
+balance=balance-cash;
+    return balance;
+}
+}
+class Transaction{
+int account_number;
+Scanner sc=new Scanner(System.in);
+    int getaccount_number(){
+    System.out.println("enter the account number");
+    account_number=sc.nextInt();
+    return account_number;
+
+    }
+    void execute(){
+        System.out.println("Successfully transacted cash to the given account");
+        System.out.println("your new balance is");
+    }
+}
+abstract class balance_inquiry{
+abstract void execute();
+
+}
+
+class Withdrawal extends Account
+{
+Withdrawal(int a,int b,double c) {
+    super(a, b, c);
+}
+double amount;
+void execute(double cash){
+System.out.println("Successfully withdrawn"+cash+"amount");
+System.out.println("new balance is");
+
+}
+
+}
+class Deposit extends Account{
+Deposit(int accountnumber, int pin, double balance) {
+        super(accountnumber, pin, balance);
+    }
+double amount;
+void execute(double cash) {
+    System.out.println("Successfully deposited"+cash+"amount");
+    System.out.println("new balance is");
+   
+
+}
+
+}
+class bankdatabase extends Atm{
+boolean authenticateuser()
+{
+System.out.println("a valid user");
+return true;
+}
+    void getAvailableBalance(){
+       
+    }
+double  credit(double balance,double cash){
+    balance=balance+cash;
+        return balance;
+}
+double debit(double balance,double cash){
+    balance=balance-cash;
+        return balance;
+}
+}
+
+
+
+class Screen{
+void displaymessage(String s){
+System.out.println(s);
+}
+class keypad{
+Scanner sc=new Scanner(System.in);
+
+   String readinput() {
+  return sc.next();
+   }
+
+}
+}
+
+class cashdispenser{
+void dispensecash() {
+       System.out.println("Your cash is dispensed");
+}
+//to check if sufficient  balance is available//
+boolean issufficientcashavailable(double cash,double balance){
+if(balance>cash) {
+return true;
+}
+else {
+return false;
+}
+
+}
+}
+class atmsystem{
+    public static void main(String args[]){
+        Scanner sc=new Scanner(System.in);
+        Account[] ac;
+        ac=new Account[3];
+        //can be considered as the database of the bank//
+        ac[0]=new Account(98567,1234,10000);
+        ac[1]=new Account(12345,1703,90000);
+        ac[2]=new Account(56743,6310,670000);
+        Screen scr=new Screen();
+        scr.displaymessage("program to implement an ATM system");
+        bankdatabase bd=new bankdatabase();
+        System.out.println("enter the account number");
+        int acc_num=sc.nextInt();
+        int people_id=0;
+        boolean res=false;
+        //to check if it is a valid account number//
+        for(int i=0;i<3;i++){
+            if(acc_num==ac[i].accountnumber){
+                people_id=i;
+                res=bd.authenticateuser();
+                bd.user_authentication=true;
+       
+            }
+        }
+        if(res==false){
+            System.out.println("invalid account number try again");
+            System.exit(0);
+        }
+        else{
+            System.out.println("Enter your pin number");
+            int x=0;
+            while(x==0){
+                int pin_number=sc.nextInt();
+                boolean pin_validity=ac[people_id].validatepin(ac[people_id].pin,pin_number);
+                if(pin_validity==false)
+                {
+                System.out.println("invlid pin");
+                System.out.println("Enter valid pin");
+                }
+                else{
+                    System.out.println("welcome to the bank system");
+                    x=1;
+                    break;
+                }
+            }
+            while(true) {
+           
+           
+            System.out.println("enter your choice ");
+            System.out.println("1.check available balance");
+            System.out.println("2.Withdraw money");
+            System.out.println("3.deposit money");
+            System.out.println("4.Transaction");
+            System.out.println("5.exit");
+            int choice=sc.nextInt();
+           
+            if(choice==1){
+                double balance=ac[people_id].getavailablebalance();
+                System.out.println(balance);
+            }
+            if(choice==2)
+            {
+                double balance;
+                balance=ac[people_id].getavailablebalance();
+                System.out.println(balance);
+                cashdispenser cd=new cashdispenser();
+                System.out.println("Enter the cash you want to withdraw");
+                double cash=sc.nextInt();
+                boolean withdrawres=cd.issufficientcashavailable(cash,balance);
+                if(withdrawres==true){
+                Withdrawal w=new Withdrawal(ac[people_id].accountnumber,ac[people_id].pin,ac[people_id].balance);//parameter=account_no,pin,balance
+                w.amount=cash;
+                w.execute(cash);
+                w.balance=balance-cash;
+                ac[people_id].balance=w.balance;
+                System.out.println(ac[people_id].balance);
+                cd.dispensecash();
+                }
+                else{
+                System.out.println("not sufficient balance to withdraw");
+                System.out.println("try again ");
+                System.out.println("thank you");
+               
+
+                }
+        }
+        if(choice==3){
+                double balance;
+                balance=ac[people_id].getavailablebalance();
+                System.out.println(balance);
+                System.out.println("Enter the cash you want to deposit");
+                int cash=sc.nextInt();
+                Deposit de=new Deposit(ac[people_id].accountnumber,ac[people_id].pin,ac[people_id].balance);//parameter=account_no,pin,balance
+                de.amount=cash;
+                de.execute(cash);
+                de.balance=balance+cash;
+                ac[people_id].balance=de.balance;
+                System.out.println(ac[people_id].balance);
+               
+        }
+        if(choice==4){
+            double balance;
+            balance=ac[people_id].getavailablebalance();
+            System.out.println(balance);
+            cashdispenser cd=new cashdispenser();
+            System.out.println("Enter the cash you want to transact");
+            double cash=sc.nextInt();
+            boolean transactres=cd.issufficientcashavailable(cash,balance);
+            if(transactres==true){
+            Transaction tc=new Transaction();
+       
+            int acnum=tc.getaccount_number();
+           
+            ac[people_id].balance=ac[people_id].balance-cash;
+            tc.execute();
+            System.out.println(ac[people_id].balance);
+            }
+            else{
+            System.out.println("not sufficient balance to transact");
+            System.out.println("try again ");
+            System.out.println("thank you");
+
+            }
+           
+        }
+        if(choice==5){
+        System.out.println("thank you");
+       
+        System.exit(0);
+        }
+        }
+    }
+
+}
+}
+
